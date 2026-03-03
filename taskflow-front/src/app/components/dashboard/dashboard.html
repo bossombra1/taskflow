@@ -1,0 +1,45 @@
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">🗂️ TaskFlow</div>
+    <nav>
+      <a routerLink="/dashboard" class="nav-item active">📊 Dashboard</a>
+      <a routerLink="/projects" class="nav-item">📁 Projets</a>
+    </nav>
+    <div class="user-info">
+      <span>👤 {{ auth.currentUser()?.name }}</span>
+      <button (click)="logout()">Déconnexion</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <h1>Tableau de bord</h1>
+
+    <div *ngIf="loading()">Chargement...</div>
+
+    <div class="stats-grid" *ngIf="data()">
+      <div class="stat-card total">
+        <div class="stat-number">{{ data()!.total_tasks }}</div>
+        <div class="stat-label">Total des tâches</div>
+      </div>
+      <div class="stat-card done">
+        <div class="stat-number">{{ data()!.done_tasks }}</div>
+        <div class="stat-label">Tâches terminées</div>
+      </div>
+      <div class="stat-card progress">
+        <div class="stat-number">{{ data()!.in_progress_tasks }}</div>
+        <div class="stat-label">En cours</div>
+      </div>
+      <div class="stat-card todo">
+        <div class="stat-number">{{ data()!.todo_tasks }}</div>
+        <div class="stat-label">À faire</div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h2>Actions rapides</h2>
+      <a routerLink="/projects" class="btn-primary">➕ Nouveau projet</a>
+    </div>
+  </main>
+</div>

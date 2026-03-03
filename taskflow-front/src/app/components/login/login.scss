@@ -1,0 +1,46 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.auth-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+
+  h1 { text-align: center; font-size: 2rem; margin-bottom: 0.5rem; }
+  h2 { text-align: center; color: #666; margin-bottom: 2rem; font-weight: 400; }
+}
+
+.field {
+  margin-bottom: 1.2rem;
+  label { display: block; margin-bottom: 0.4rem; font-weight: 500; color: #333; }
+  input {
+    width: 100%; padding: 0.75rem 1rem; border: 2px solid #e2e8f0;
+    border-radius: 8px; font-size: 1rem; box-sizing: border-box;
+    transition: border-color 0.2s;
+    &:focus { outline: none; border-color: #667eea; }
+  }
+}
+
+button {
+  width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white; border: none; border-radius: 8px; font-size: 1rem;
+  cursor: pointer; font-weight: 600; margin-top: 0.5rem;
+  &:disabled { opacity: 0.7; cursor: not-allowed; }
+}
+
+.error {
+  background: #fee2e2; color: #dc2626; padding: 0.75rem 1rem;
+  border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem;
+}
+
+.link { text-align: center; margin-top: 1.5rem; color: #666;
+  a { color: #667eea; font-weight: 600; text-decoration: none; }
+}

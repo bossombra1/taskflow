@@ -1,0 +1,106 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">🗂️ TaskFlow</div>
+    <nav>
+      <a routerLink="/dashboard" class="nav-item">📊 Dashboard</a>
+      <a routerLink="/projects" class="nav-item">📁 Projets</a>
+    </nav>
+    <div class="user-info">
+      <span>👤 {{ auth.currentUser()?.name }}</span>
+      <button (click)="logout()">Déconnexion</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="header">
+      <div>
+        <a routerLink="/projects" class="back">← Retour aux projets</a>
+        <h1>Tâches du projet</h1>
+      </div>
+      <button class="btn-primary" (click)="openCreate()">➕ Nouvelle tâche</button>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filters">
+      <select (change)="applyFilter('status', $any($event.target).value)">
+        <option value="">Tous les statuts</option>
+        <option value="todo">À faire</option>
+        <option value="in_progress">En cours</option>
+        <option value="done">Terminé</option>
+      </select>
+      <select (change)="applyFilter('priority', $any($event.target).value)">
+        <option value="">Toutes les priorités</option>
+        <option value="low">Basse</option>
+        <option value="medium">Moyenne</option>
+        <option value="high">Haute</option>
+      </select>
+    </div>
+
+    <div *ngIf="loading()">Chargement...</div>
+
+    <div class="tasks-list" *ngIf="!loading()">
+      <div class="task-card" *ngFor="let t of tasks()" [class]="'priority-' + t.priority">
+        <div class="task-header">
+          <h3>{{ t.title }}</h3>
+          <div class="badges">
+            <span class="badge priority" [class]="t.priority">{{ priorityLabels[t.priority] }}</span>
+          </div>
+        </div>
+        <p *ngIf="t.description">{{ t.description }}</p>
+        <div class="task-footer">
+          <select [value]="t.status" (change)="changeStatus(t, $any($event.target).value)" class="status-select" [class]="t.status">
+            <option value="todo">À faire</option>
+            <option value="in_progress">En cours</option>
+            <option value="done">Terminé</option>
+          </select>
+          <div class="task-actions">
+            <button class="btn-edit" (click)="openEdit(t)">✏️</button>
+            <button class="btn-delete" (click)="delete(t.id)">🗑️</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty" *ngIf="tasks().length === 0">
+        <p>Aucune tâche pour l'instant.</p>
+        <button class="btn-primary" (click)="openCreate()">Créer une tâche</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showForm()" (click)="showForm.set(false)">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h2>{{ editingTask() ? 'Modifier' : 'Nouvelle' }} tâche</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label>Titre *</label>
+        <input type="text" formControlName="title" placeholder="Titre de la tâche" />
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea formControlName="description" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label>Statut</label>
+        <select formControlName="status">
+          <option value="todo">À faire</option>
+          <option value="in_progress">En cours</option>
+          <option value="done">Terminé</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Priorité</label>
+        <select formControlName="priority">
+          <option value="low">Basse</option>
+          <option value="medium">Moyenne</option>
+          <option value="high">Haute</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="showForm.set(false)">Annuler</button>
+        <button type="submit" class="btn-primary">Sauvegarder</button>
+      </div>
+    </form>
+  </div>
+</div>

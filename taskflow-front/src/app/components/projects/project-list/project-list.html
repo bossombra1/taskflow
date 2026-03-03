@@ -1,0 +1,68 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">🗂️ TaskFlow</div>
+    <nav>
+      <a routerLink="/dashboard" class="nav-item">📊 Dashboard</a>
+      <a routerLink="/projects" class="nav-item active">📁 Projets</a>
+    </nav>
+    <div class="user-info">
+      <span>👤 {{ auth.currentUser()?.name }}</span>
+      <button (click)="logout()">Déconnexion</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="header">
+      <h1>Mes Projets</h1>
+      <button class="btn-primary" (click)="openCreate()">➕ Nouveau projet</button>
+    </div>
+
+    <div *ngIf="loading()">Chargement...</div>
+
+    <div class="projects-grid" *ngIf="!loading()">
+      <div class="project-card" *ngFor="let p of projects()">
+        <div class="project-color" [style.background]="p.color"></div>
+        <div class="project-body">
+          <h3>{{ p.name }}</h3>
+          <p>{{ p.description || 'Aucune description' }}</p>
+          <span class="tasks-count">{{ p.tasks_count || 0 }} tâche(s)</span>
+        </div>
+        <div class="project-actions">
+          <a [routerLink]="['/projects', p.id, 'tasks']" class="btn-view">👁️ Voir</a>
+          <button class="btn-edit" (click)="openEdit(p)">✏️</button>
+          <button class="btn-delete" (click)="delete(p.id)">🗑️</button>
+        </div>
+      </div>
+
+      <div class="empty" *ngIf="projects().length === 0">
+        <p>Aucun projet pour l'instant.</p>
+        <button class="btn-primary" (click)="openCreate()">Créer mon premier projet</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal formulaire -->
+<div class="modal-overlay" *ngIf="showForm()" (click)="showForm.set(false)">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h2>{{ editingProject() ? 'Modifier' : 'Nouveau' }} projet</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label>Nom *</label>
+        <input type="text" formControlName="name" placeholder="Mon projet" />
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea formControlName="description" rows="3" placeholder="Description..."></textarea>
+      </div>
+      <div class="field">
+        <label>Couleur</label>
+        <input type="color" formControlName="color" />
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="showForm.set(false)">Annuler</button>
+        <button type="submit" class="btn-primary">Sauvegarder</button>
+      </div>
+    </form>
+  </div>
+</div>

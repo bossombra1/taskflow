@@ -1,0 +1,56 @@
+@use '../../dashboard/dashboard.scss' as *;
+
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+
+.projects-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;
+}
+
+.project-card {
+  background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden; transition: transform 0.2s;
+  &:hover { transform: translateY(-2px); }
+}
+
+.project-color { height: 6px; }
+
+.project-body {
+  padding: 1.25rem;
+  h3 { margin: 0 0 0.5rem; color: #1e293b; }
+  p  { color: #64748b; font-size: 0.9rem; margin: 0 0 0.75rem; }
+  .tasks-count { font-size: 0.8rem; background: #f1f5f9; padding: 0.25rem 0.6rem; border-radius: 99px; color: #64748b; }
+}
+
+.project-actions {
+  display: flex; gap: 0.5rem; padding: 0.75rem 1.25rem;
+  border-top: 1px solid #f1f5f9;
+  .btn-view   { flex: 1; text-align: center; padding: 0.4rem; background: #f1f5f9; border-radius: 6px; text-decoration: none; color: #334155; font-size: 0.85rem; }
+  .btn-edit   { padding: 0.4rem 0.6rem; background: #fef9c3; border: none; border-radius: 6px; cursor: pointer; }
+  .btn-delete { padding: 0.4rem 0.6rem; background: #fee2e2; border: none; border-radius: 6px; cursor: pointer; }
+}
+
+.empty { grid-column: 1/-1; text-align: center; padding: 3rem; color: #94a3b8; }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+
+.modal {
+  background: white; padding: 2rem; border-radius: 16px; width: 100%; max-width: 480px;
+  h2 { margin-bottom: 1.5rem; }
+}
+
+.field {
+  margin-bottom: 1rem;
+  label { display: block; margin-bottom: 0.4rem; font-weight: 500; }
+  input, textarea {
+    width: 100%; padding: 0.7rem; border: 2px solid #e2e8f0;
+    border-radius: 8px; font-size: 1rem; box-sizing: border-box;
+    &:focus { outline: none; border-color: #6366f1; }
+  }
+}
+
+.modal-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+.btn-cancel { padding: 0.7rem 1.5rem; border: 2px solid #e2e8f0; background: white; border-radius: 8px; cursor: pointer; }
+.btn-primary { padding: 0.7rem 1.5rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }

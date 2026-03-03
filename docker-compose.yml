@@ -1,0 +1,48 @@
+services:
+  app:
+    build:
+      context: ./taskflow-api
+      dockerfile: Dockerfile
+    container_name: taskflow_app
+    user: "1000:1000"  # <--- Ajouté pour régler les problèmes de permissions
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./taskflow-api:/var/www
+    networks:
+      - taskflow_network
+
+  webserver:
+    image: nginx:alpine
+    container_name: taskflow_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./taskflow-api:/var/www
+      - ./taskflow-api/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - taskflow_network
+
+  db:
+    image: mysql:8.0
+    container_name: taskflow_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: taskflow
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: taskflow
+      MYSQL_USER: taskflow
+    ports:
+      - "3307:3306" # Port 3307 pour éviter les conflits sur ton Windows
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - taskflow_network
+
+networks:
+  taskflow_network:
+    driver: bridge
+
+volumes:
+  dbdata:
