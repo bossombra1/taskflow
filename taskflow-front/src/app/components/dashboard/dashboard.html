@@ -1,45 +1,153 @@
 <div class="layout">
-  <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="logo">🗂️ TaskFlow</div>
-    <nav>
-      <a routerLink="/dashboard" class="nav-item active">📊 Dashboard</a>
-      <a routerLink="/projects" class="nav-item">📁 Projets</a>
+    <div class="sidebar-brand">
+      <img src="https://oipi.ci/wp-content/uploads/2019/09/LOGO-OIPI-2022-png-300x216.png" alt="OIPI" />
+      <div class="brand-text">
+        <span class="brand-name">TaskFlow</span>
+        <span class="brand-sub">OIPI · Workspace</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section-title">Menu</div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item active">
+        <span class="nav-icon-wrap">📊</span> Tableau de bord
+      </a>
+      <a routerLink="/projects" class="nav-item">
+        <span class="nav-icon-wrap">📁</span> Projets
+      </a>
     </nav>
-    <div class="user-info">
-      <span>👤 {{ auth.currentUser()?.name }}</span>
-      <button (click)="logout()">Déconnexion</button>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">{{ auth.currentUser()?.name?.charAt(0) }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ auth.currentUser()?.name }}</span>
+          <span class="user-role">Collaborateur OIPI</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        ⏻ &nbsp; Se déconnecter
+      </button>
     </div>
   </aside>
 
-  <!-- Main -->
   <main class="main">
-    <h1>Tableau de bord</h1>
-
-    <div *ngIf="loading()">Chargement...</div>
-
-    <div class="stats-grid" *ngIf="data()">
-      <div class="stat-card total">
-        <div class="stat-number">{{ data()!.total_tasks }}</div>
-        <div class="stat-label">Total des tâches</div>
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Tableau de bord</h1>
+        <p>Bienvenue, {{ auth.currentUser()?.name }} — voici votre résumé</p>
       </div>
-      <div class="stat-card done">
-        <div class="stat-number">{{ data()!.done_tasks }}</div>
-        <div class="stat-label">Tâches terminées</div>
-      </div>
-      <div class="stat-card progress">
-        <div class="stat-number">{{ data()!.in_progress_tasks }}</div>
-        <div class="stat-label">En cours</div>
-      </div>
-      <div class="stat-card todo">
-        <div class="stat-number">{{ data()!.todo_tasks }}</div>
-        <div class="stat-label">À faire</div>
-      </div>
+      <div class="topbar-date">{{ today | date:'EEE d MMM yyyy' }}</div>
     </div>
 
-    <div class="quick-actions">
-      <h2>Actions rapides</h2>
-      <a routerLink="/projects" class="btn-primary">➕ Nouveau projet</a>
-    </div>
+    <div *ngIf="loading()" class="loading">Chargement...</div>
+
+    <ng-container *ngIf="!loading() && data()">
+      <div class="stats-grid">
+        <div class="stat-card card-total">
+          <div class="stat-accent"></div>
+          <div class="stat-top">
+            <div class="stat-icon">📋</div>
+            <span class="stat-badge">TOTAL</span>
+          </div>
+          <div class="stat-number">{{ data()!.total_tasks }}</div>
+          <div class="stat-label">Tâches totales</div>
+          <div class="stat-progress"><div class="bar" style="width:100%"></div></div>
+        </div>
+
+        <div class="stat-card card-done">
+          <div class="stat-accent"></div>
+          <div class="stat-top">
+            <div class="stat-icon">✅</div>
+            <span class="stat-badge">DONE</span>
+          </div>
+          <div class="stat-number">{{ data()!.done_tasks }}</div>
+          <div class="stat-label">Terminées</div>
+          <div class="stat-progress">
+            <div class="bar" [style.width.%]="data()!.total_tasks ? (data()!.done_tasks / data()!.total_tasks * 100) : 0"></div>
+          </div>
+        </div>
+
+        <div class="stat-card card-progress">
+          <div class="stat-accent"></div>
+          <div class="stat-top">
+            <div class="stat-icon">⚡</div>
+            <span class="stat-badge">ACTIF</span>
+          </div>
+          <div class="stat-number">{{ data()!.in_progress_tasks }}</div>
+          <div class="stat-label">En cours</div>
+          <div class="stat-progress">
+            <div class="bar" [style.width.%]="data()!.total_tasks ? (data()!.in_progress_tasks / data()!.total_tasks * 100) : 0"></div>
+          </div>
+        </div>
+
+        <div class="stat-card card-todo">
+          <div class="stat-accent"></div>
+          <div class="stat-top">
+            <div class="stat-icon">🕐</div>
+            <span class="stat-badge">TODO</span>
+          </div>
+          <div class="stat-number">{{ data()!.todo_tasks }}</div>
+          <div class="stat-label">À faire</div>
+          <div class="stat-progress">
+            <div class="bar" [style.width.%]="data()!.total_tasks ? (data()!.todo_tasks / data()!.total_tasks * 100) : 0"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <div class="panel">
+          <div class="panel-header"><h3>Actions rapides</h3></div>
+          <div class="panel-body">
+            <div class="action-list">
+              <a routerLink="/projects" class="action-item primary">
+                <span class="action-icon">📁</span>
+                <span>Voir tous mes projets</span>
+                <span class="action-arrow">→</span>
+              </a>
+              <a routerLink="/projects" class="action-item secondary">
+                <span class="action-icon">✨</span>
+                <span>Créer un nouveau projet</span>
+                <span class="action-arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3>Répartition des tâches</h3></div>
+          <div class="panel-body">
+            <div class="status-list">
+              <div class="status-row s-todo">
+                <span class="status-dot todo"></span>
+                <span class="status-name">À faire</span>
+                <span class="status-count">{{ data()!.todo_tasks }}</span>
+                <div class="status-bar-wrap">
+                  <div class="status-bar" [style.width.%]="data()!.total_tasks ? (data()!.todo_tasks / data()!.total_tasks * 100) : 0"></div>
+                </div>
+              </div>
+              <div class="status-row s-progress">
+                <span class="status-dot progress"></span>
+                <span class="status-name">En cours</span>
+                <span class="status-count">{{ data()!.in_progress_tasks }}</span>
+                <div class="status-bar-wrap">
+                  <div class="status-bar" [style.width.%]="data()!.total_tasks ? (data()!.in_progress_tasks / data()!.total_tasks * 100) : 0"></div>
+                </div>
+              </div>
+              <div class="status-row s-done">
+                <span class="status-dot done"></span>
+                <span class="status-name">Terminées</span>
+                <span class="status-count">{{ data()!.done_tasks }}</span>
+                <div class="status-bar-wrap">
+                  <div class="status-bar" [style.width.%]="data()!.total_tasks ? (data()!.done_tasks / data()!.total_tasks * 100) : 0"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
   </main>
 </div>

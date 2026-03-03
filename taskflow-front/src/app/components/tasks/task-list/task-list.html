@@ -1,23 +1,42 @@
 <div class="layout">
   <aside class="sidebar">
-    <div class="logo">🗂️ TaskFlow</div>
-    <nav>
-      <a routerLink="/dashboard" class="nav-item">📊 Dashboard</a>
-      <a routerLink="/projects" class="nav-item">📁 Projets</a>
+    <div class="sidebar-brand">
+      <img src="https://oipi.ci/wp-content/uploads/2019/09/LOGO-OIPI-2022-png-300x216.png" alt="OIPI" />
+      <div class="brand-text">
+        <span class="brand-name">TaskFlow</span>
+        <span class="brand-sub">OIPI · Workspace</span>
+      </div>
+    </div>
+    <div class="sidebar-section-title">Menu</div>
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="nav-icon-wrap">📊</span> Tableau de bord
+      </a>
+      <a routerLink="/projects" class="nav-item active">
+        <span class="nav-icon-wrap">📁</span> Projets
+      </a>
     </nav>
-    <div class="user-info">
-      <span>👤 {{ auth.currentUser()?.name }}</span>
-      <button (click)="logout()">Déconnexion</button>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">{{ auth.currentUser()?.name?.charAt(0) }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ auth.currentUser()?.name }}</span>
+          <span class="user-role">Collaborateur OIPI</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">⏻ &nbsp; Se déconnecter</button>
     </div>
   </aside>
 
   <main class="main">
-    <div class="header">
-      <div>
-        <a routerLink="/projects" class="back">← Retour aux projets</a>
+    <a routerLink="/projects" class="back-link">← Retour aux projets</a>
+
+    <div class="topbar">
+      <div class="topbar-left">
         <h1>Tâches du projet</h1>
+        <p>Gérez et suivez vos tâches</p>
       </div>
-      <button class="btn-primary" (click)="openCreate()">➕ Nouvelle tâche</button>
+      <button class="btn-primary" (click)="openCreate()">+ Nouvelle tâche</button>
     </div>
 
     <!-- Filtres -->
@@ -36,34 +55,44 @@
       </select>
     </div>
 
-    <div *ngIf="loading()">Chargement...</div>
+    <div *ngIf="loading()" class="loading">Chargement des tâches...</div>
 
-    <div class="tasks-list" *ngIf="!loading()">
+    <div class="tasks-list" *ngIf="!loading() && tasks().length > 0">
       <div class="task-card" *ngFor="let t of tasks()" [class]="'priority-' + t.priority">
         <div class="task-header">
           <h3>{{ t.title }}</h3>
           <div class="badges">
-            <span class="badge priority" [class]="t.priority">{{ priorityLabels[t.priority] }}</span>
+            <span class="badge" [class]="t.priority">
+              {{ priorityLabels[t.priority] }}
+            </span>
           </div>
         </div>
-        <p *ngIf="t.description">{{ t.description }}</p>
+
+        <p class="task-desc" *ngIf="t.description">{{ t.description }}</p>
+
         <div class="task-footer">
-          <select [value]="t.status" (change)="changeStatus(t, $any($event.target).value)" class="status-select" [class]="t.status">
-            <option value="todo">À faire</option>
-            <option value="in_progress">En cours</option>
-            <option value="done">Terminé</option>
+          <select
+            [value]="t.status"
+            (change)="changeStatus(t, $any($event.target).value)"
+            class="status-select"
+            [class]="t.status">
+            <option value="todo">🕐 À faire</option>
+            <option value="in_progress">⚡ En cours</option>
+            <option value="done">✅ Terminé</option>
           </select>
           <div class="task-actions">
-            <button class="btn-edit" (click)="openEdit(t)">✏️</button>
-            <button class="btn-delete" (click)="delete(t.id)">🗑️</button>
+            <button class="icon-btn" (click)="openEdit(t)" title="Modifier">✏️</button>
+            <button class="icon-btn danger" (click)="delete(t.id)" title="Supprimer">🗑️</button>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="empty" *ngIf="tasks().length === 0">
-        <p>Aucune tâche pour l'instant.</p>
-        <button class="btn-primary" (click)="openCreate()">Créer une tâche</button>
-      </div>
+    <div class="empty-state" *ngIf="!loading() && tasks().length === 0">
+      <div class="empty-icon">📝</div>
+      <h3>Aucune tâche</h3>
+      <p>Créez votre première tâche pour commencer à travailler</p>
+      <button class="btn-primary" (click)="openCreate()">+ Créer une tâche</button>
     </div>
   </main>
 </div>
@@ -71,7 +100,10 @@
 <!-- Modal -->
 <div class="modal-overlay" *ngIf="showForm()" (click)="showForm.set(false)">
   <div class="modal" (click)="$event.stopPropagation()">
-    <h2>{{ editingTask() ? 'Modifier' : 'Nouvelle' }} tâche</h2>
+    <div class="modal-header">
+      <h2>{{ editingTask() ? 'Modifier la tâche' : 'Nouvelle tâche' }}</h2>
+      <button class="modal-close" (click)="showForm.set(false)">✕</button>
+    </div>
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="field">
         <label>Titre *</label>
@@ -79,22 +111,22 @@
       </div>
       <div class="field">
         <label>Description</label>
-        <textarea formControlName="description" rows="3"></textarea>
+        <textarea formControlName="description" rows="3" placeholder="Décrivez la tâche..."></textarea>
       </div>
       <div class="field">
         <label>Statut</label>
         <select formControlName="status">
-          <option value="todo">À faire</option>
-          <option value="in_progress">En cours</option>
-          <option value="done">Terminé</option>
+          <option value="todo">🕐 À faire</option>
+          <option value="in_progress">⚡ En cours</option>
+          <option value="done">✅ Terminé</option>
         </select>
       </div>
       <div class="field">
         <label>Priorité</label>
         <select formControlName="priority">
-          <option value="low">Basse</option>
-          <option value="medium">Moyenne</option>
-          <option value="high">Haute</option>
+          <option value="low">🔵 Basse</option>
+          <option value="medium">🟡 Moyenne</option>
+          <option value="high">🔴 Haute</option>
         </select>
       </div>
       <div class="modal-actions">

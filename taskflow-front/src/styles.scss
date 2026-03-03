@@ -2,6 +2,18 @@
 
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: #f8fafc;
-  color: #1e293b;
+  background: #f5f7fa;
+  color: #1f2937;
+}
+
+:root {
+  --oipi-green:      #1a5c38;
+  --oipi-green-dark: #0d3d25;
+  --oipi-gold:       #f5a623;
+  --oipi-gold-dark:  #e09010;
+  --sidebar-bg:      #0d3d25;
+  --text-primary:    #1f2937;
+  --text-secondary:  #64748b;
+  --border:          #e5e7eb;
+  --bg-light:        #f5f7fa;
 }

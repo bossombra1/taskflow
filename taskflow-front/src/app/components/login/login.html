@@ -1,18 +1,22 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h1>🗂️ TaskFlow</h1>
-    <h2>Connexion</h2>
+<div class="login-page">
+  <div class="login-box">
+    <div class="brand">
+      <img src="https://oipi.ci/wp-content/uploads/2019/09/LOGO-OIPI-2022-png-300x216.png" alt="OIPI" />
+      <span>TaskFlow</span>
+    </div>
 
-    <div class="error" *ngIf="error">{{ error }}</div>
+    <h1>Se connecter</h1>
+
+    <div class="error-box" *ngIf="error">⚠️ {{ error }}</div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="field">
-        <label>Email</label>
-        <input type="email" formControlName="email" placeholder="vous@email.com" />
+        <label>Adresse email</label>
+        <input type="email" formControlName="email" placeholder="" />
       </div>
       <div class="field">
         <label>Mot de passe</label>
-        <input type="password" formControlName="password" placeholder="••••••••" />
+        <input type="password" formControlName="password" placeholder="" />
       </div>
       <button type="submit" [disabled]="loading">
         {{ loading ? 'Connexion...' : 'Se connecter' }}

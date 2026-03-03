@@ -1,29 +1,33 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h1>🗂️ TaskFlow</h1>
-    <h2>Créer un compte</h2>
+<div class="login-page">
+  <div class="login-box">
+    <div class="brand">
+      <img src="https://oipi.ci/wp-content/uploads/2019/09/LOGO-OIPI-2022-png-300x216.png" alt="OIPI" />
+      <span>TaskFlow</span>
+    </div>
 
-    <div class="error" *ngIf="error">{{ error }}</div>
+    <h1>Créer un compte</h1>
+
+    <div class="error-box" *ngIf="error">⚠️ {{ error }}</div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="field">
         <label>Nom complet</label>
-        <input type="text" formControlName="name" placeholder="Jean Dupont" />
+        <input type="text" formControlName="name" />
       </div>
       <div class="field">
-        <label>Email</label>
-        <input type="email" formControlName="email" placeholder="vous@email.com" />
+        <label>Adresse email</label>
+        <input type="email" formControlName="email" />
       </div>
       <div class="field">
         <label>Mot de passe</label>
-        <input type="password" formControlName="password" placeholder="Min. 8 caractères" />
+        <input type="password" formControlName="password" />
       </div>
       <div class="field">
         <label>Confirmer le mot de passe</label>
-        <input type="password" formControlName="password_confirmation" placeholder="••••••••" />
+        <input type="password" formControlName="password_confirmation" />
       </div>
       <button type="submit" [disabled]="loading">
-        {{ loading ? 'Inscription...' : 'S\'inscrire' }}
+        {{ loading ? 'Inscription...' : "S'inscrire" }}
       </button>
     </form>
 

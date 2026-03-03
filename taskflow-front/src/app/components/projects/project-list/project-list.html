@@ -1,61 +1,90 @@
 <div class="layout">
   <aside class="sidebar">
-    <div class="logo">🗂️ TaskFlow</div>
-    <nav>
-      <a routerLink="/dashboard" class="nav-item">📊 Dashboard</a>
-      <a routerLink="/projects" class="nav-item active">📁 Projets</a>
+    <div class="sidebar-brand">
+      <img src="https://oipi.ci/wp-content/uploads/2019/09/LOGO-OIPI-2022-png-300x216.png" alt="OIPI" />
+      <div class="brand-text">
+        <span class="brand-name">TaskFlow</span>
+        <span class="brand-sub">OIPI · Workspace</span>
+      </div>
+    </div>
+    <div class="sidebar-section-title">Menu</div>
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="nav-icon-wrap">📊</span> Tableau de bord
+      </a>
+      <a routerLink="/projects" class="nav-item active">
+        <span class="nav-icon-wrap">📁</span> Projets
+      </a>
     </nav>
-    <div class="user-info">
-      <span>👤 {{ auth.currentUser()?.name }}</span>
-      <button (click)="logout()">Déconnexion</button>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">{{ auth.currentUser()?.name?.charAt(0) }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ auth.currentUser()?.name }}</span>
+          <span class="user-role">Collaborateur OIPI</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">⏻ &nbsp; Se déconnecter</button>
     </div>
   </aside>
 
   <main class="main">
-    <div class="header">
-      <h1>Mes Projets</h1>
-      <button class="btn-primary" (click)="openCreate()">➕ Nouveau projet</button>
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Mes Projets</h1>
+        <p>Gérez et suivez l'avancement de vos projets</p>
+      </div>
+      <button class="btn-primary" (click)="openCreate()">+ Nouveau projet</button>
     </div>
 
-    <div *ngIf="loading()">Chargement...</div>
+    <div *ngIf="loading()" class="loading">Chargement...</div>
 
     <div class="projects-grid" *ngIf="!loading()">
       <div class="project-card" *ngFor="let p of projects()">
-        <div class="project-color" [style.background]="p.color"></div>
-        <div class="project-body">
-          <h3>{{ p.name }}</h3>
-          <p>{{ p.description || 'Aucune description' }}</p>
-          <span class="tasks-count">{{ p.tasks_count || 0 }} tâche(s)</span>
-        </div>
-        <div class="project-actions">
-          <a [routerLink]="['/projects', p.id, 'tasks']" class="btn-view">👁️ Voir</a>
-          <button class="btn-edit" (click)="openEdit(p)">✏️</button>
-          <button class="btn-delete" (click)="delete(p.id)">🗑️</button>
+        <div class="card-top" [style.background]="p.color"></div>
+        <div class="card-body">
+          <div class="card-header">
+            <h3>{{ p.name }}</h3>
+            <div class="card-menu">
+              <button class="icon-btn" (click)="openEdit(p)" title="Modifier">✏️</button>
+              <button class="icon-btn danger" (click)="delete(p.id)" title="Supprimer">🗑️</button>
+            </div>
+          </div>
+          <p class="card-desc">{{ p.description || 'Aucune description' }}</p>
+          <div class="card-footer">
+            <span class="badge-count">{{ p.tasks_count || 0 }} tâche(s)</span>
+            <a [routerLink]="['/projects', p.id, 'tasks']" class="btn-view">Voir les tâches →</a>
+          </div>
         </div>
       </div>
 
-      <div class="empty" *ngIf="projects().length === 0">
-        <p>Aucun projet pour l'instant.</p>
-        <button class="btn-primary" (click)="openCreate()">Créer mon premier projet</button>
+      <div class="empty-state" *ngIf="projects().length === 0">
+        <div class="empty-icon">📁</div>
+        <h3>Aucun projet</h3>
+        <p>Créez votre premier projet pour commencer à organiser vos tâches</p>
+        <button class="btn-primary" (click)="openCreate()">+ Créer un projet</button>
       </div>
     </div>
   </main>
 </div>
 
-<!-- Modal formulaire -->
+<!-- Modal -->
 <div class="modal-overlay" *ngIf="showForm()" (click)="showForm.set(false)">
   <div class="modal" (click)="$event.stopPropagation()">
-    <h2>{{ editingProject() ? 'Modifier' : 'Nouveau' }} projet</h2>
+    <div class="modal-header">
+      <h2>{{ editingProject() ? 'Modifier le projet' : 'Nouveau projet' }}</h2>
+      <button class="modal-close" (click)="showForm.set(false)">✕</button>
+    </div>
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="field">
-        <label>Nom *</label>
-        <input type="text" formControlName="name" placeholder="Mon projet" />
+        <label>Nom du projet *</label>
+        <input type="text" formControlName="name" placeholder="Ex: Refonte site web" />
       </div>
       <div class="field">
         <label>Description</label>
-        <textarea formControlName="description" rows="3" placeholder="Description..."></textarea>
+        <textarea formControlName="description" rows="3" placeholder="Décrivez votre projet..."></textarea>
       </div>
-      <div class="field">
+      <div class="field field-color">
         <label>Couleur</label>
         <input type="color" formControlName="color" />
       </div>
